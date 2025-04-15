@@ -1,0 +1,50 @@
+﻿@page "/orders"
+<PageTitle>Objednávky</PageTitle>
+<h3>Objednávky</h3>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Stav</th>
+        <th scope="col">Akce</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach(var order in CurrentOrders)
+        {
+            <tr>
+                <td scope="row">@order.Id</td>
+                <td>@order.Status</td>
+                <td>
+                    <a href="/orders/@order.Id">Detail</a>
+                </td>
+            </tr>
+        } 
+    </tbody>
+</table>
+
+@code {
+
+    public class Order
+    {
+        public required string Id { get; set; }
+        public required string Status { get; set; }
+    }
+
+    public List<Order> CurrentOrders =  new()
+    {
+        new Order()
+        {
+            Id = Guid.CreateVersion7().ToString(),
+            Status = "new"
+        },
+
+        new Order()
+        {
+            Id = Guid.CreateVersion7().ToString(),
+            Status = "in progress"
+        },
+    };
+
+}

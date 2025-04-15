@@ -1,0 +1,11 @@
+﻿@page "/orders/{id:guid}"
+<PageTitle>Detail objednávky</PageTitle>
+<h3>Detail objednávky @id.ToString()</h3>
+:-------)
+
+
+
+@code {
+    [Parameter]
+    public Guid id { get; set; }
+}

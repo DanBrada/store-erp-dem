@@ -1,0 +1,50 @@
+﻿@page "/TestClient"
+@using Microsoft.AspNetCore.SignalR.Client
+@rendermode InteractiveWebAssembly
+@inject NavigationManager Navigation
+
+<PageTitle>Stejný jako test, akorát z klienta</PageTitle>
+<h3>Tohle je stejný jako test, akorát to jde z klienta uwu</h3>
+
+@hellos
+@if (lastGreet != "")
+{
+    <span>
+        (@lastGreet)
+    </span>
+}
+
+
+<button @onclick="Greet">Pozdrav</button>
+
+@code {
+    private HubConnection? _hubConnection;
+    private int hellos = 0;
+    private string lastGreet = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/api/v1/feed/hello"))
+            .Build();
+
+        _hubConnection.On<string>("UpdateCount", async (w) =>
+        {
+            hellos++;
+            lastGreet = w;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    public async Task Greet()
+    {
+        if (_hubConnection != null) await _hubConnection.SendAsync("CountHello");
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection != null) await _hubConnection.DisposeAsync();
+    }
+}
